@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-/* #include "1.h" */
+/* #include "1a.h" */
 
 /*------------------------------------*/
 
-#define max_N_elem 100
+#define max_N_elem 100 // for print_tree_bfs()
 
 /*------------------------------------*/
 
@@ -18,19 +18,18 @@ struct elem {
 
 void add_elem (int x);
 struct elem * find_elem (int x);
+struct elem * find_prev (int x);
 int del_elem (int x);
 
 void print_tree_bfs (struct elem * p);
-void add_to_queue (struct elem * p);
-struct elem * take_from_queue();
-int queue_not_empty ();
-int sas () {
-    putchar ('\n');
-}
+void add_to_queue (struct elem * p); // for print_tree_bfs()
+struct elem * take_from_queue(); // for print_tree_bfs()
+int queue_not_empty (); // for print_tree_bfs()
 
 /*------------------------------------*/
 
 struct elem * root;
+
 struct elem * queue[max_N_elem]; // for print_tree_bfs()
 int i_beg = 0, i_end = 0, i_layer = 0; // for print_tree_bfs()
 
@@ -51,16 +50,15 @@ int main () {
     add_elem (7);
     add_elem (13);
     add_elem (15);
-    print_tree_bfs(root);
-    sas();
+
+    print_tree_bfs(root); putchar ('\n');
 
     int x;
     scanf("%d", &x);
     if (del_elem (x) == 1)
         printf("There is no such element.\n");
 
-    print_tree_bfs(root);
-    putchar('\n');
+    print_tree_bfs(root); putchar('\n');
 
     return 0;
 }
