@@ -4,14 +4,13 @@ global func
     section .data
     section .text
 func:
-    mov rdx, 7
-    mov rbx, 8
-    add rdx, rbx
-
-    call exit
-
-exit:
-    mov rax, 60
-    mov rdi, rdx
-    syscall
+    push rbp
+    mov rbp, rsp
+    mov dword [rbp - 0xC], 7
+    mov dword [rbp - 0x8], 8
+    mov edx, dword [rbp - 0xc]
+    mov eax, dword [rbp - 0x8]
+    add eax, edx
+    mov dword [rbp - 0x4], eax ; summ is still in eax
+    pop rbp
     ret
