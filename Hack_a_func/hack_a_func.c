@@ -28,7 +28,7 @@ void honestfunc1() {
 }
 
 void honestfunc2() {
-    printf ("\t...сел в нее и попылыл (этим мужиком был Золтан Хивай)!\n");
+    printf ("\t...сел в нее и попылыл (этим мужиком был мальчик с пальчик)!\n");
 
     return;
 }
@@ -38,7 +38,7 @@ void hackerfunc() {
 
     unsigned char * honf1 = (unsigned char*)honestfunc1;
     *honf1 = 0xeb;
-    *(honf1 + 1) = honestfunc2 - honestfunc1;
+    *(honf1 + 1) = honestfunc2 - honestfunc1 - 2;
 
     return;
 }
