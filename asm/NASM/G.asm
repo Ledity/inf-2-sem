@@ -2,18 +2,35 @@ global main
 
     section .bss
 input:  resb 1
-number: resd 1
+number: resq 1
 
     section .data
-sas:    db 'a', 10
+sas:    db ' ', 10
+YES:    db 'YES', 10
+NO:     db 'NO', 10
 
     section .text
 main:
     call read_uns
 
-    and dword [number], 0000FFFFh
+    mov rax, [number]
 
-    call put_uns
+    call read_uns
+
+    mov rbx, [number]
+    add rbx, rax
+    jc label_yes
+    call put_no
+    jmp label_exit
+label_yes:
+    call put_yes
+label_exit:
+
+    ;; call put_uns
+    ;; call put_a
+    ;; mov [number], rax
+    ;; call put_uns
+    ;; call put_a
 
     call exit
 
@@ -29,13 +46,13 @@ read_uns:
     push rsp
     push rbp
 
-    xor edi, edi                ; edi := 0
-    xor esi, esi                ; esi := 0
+    xor rdi, rdi                ; rdi := 0
+    xor rsi, rsi                ; rsi := 0
 m1:
     jmp getchar
 back_getchar:
 
-    xor eax, eax
+    xor rax, rax
     mov al, [input]             ; al : = [input]
     cmp al, 0xA
     je m2                       ; (al == 10) ? -> m2
@@ -45,19 +62,19 @@ back_getchar:
     cmp al, '9'
     ja r_u_exit
 
-    inc edi
-    xor ecx, ecx
+    inc rdi
+    xor rcx, rcx
     mov cl, al
-    mov eax, esi
-    mov ebx, 10
-    mul ebx
+    mov rax, rsi
+    mov rbx, 10
+    mul rbx
     sub cl, 48
-    add eax, ecx
+    add rax, rcx
     jc r_u_exit
-    mov esi, eax
+    mov rsi, rax
     jmp m1
 m2:
-    mov [number], esi
+    mov [number], rsi
 r_u_exit:
     pop rbp
     pop rsp
@@ -99,35 +116,35 @@ put_uns:
     push rdi
     push rsp
     push rbp
-    mov eax, dword [number]
-    mov edi, eax
-    mov esi, 10
-    xor ebx, ebx
+    mov rax, qword [number]
+    mov rdi, rax
+    mov rsi, 10
+    xor rbx, rbx
 loop1:
-    xor edx, edx
-    div esi
+    xor rdx, rdx
+    div rsi
 
-    inc ebx
-    cmp eax, 0
+    inc rbx
+    cmp rax, 0
     jne loop1
 
-    mov eax, 1
-    mov ecx, ebx
-    dec ecx
+    mov rax, 1
+    mov rcx, rbx
+    dec rcx
 
-    cmp ecx, 0
+    cmp rcx, 0
     je loop4
 
 loop2:
-    mul esi
+    mul rsi
     loop loop2
 
-    mov ebx, eax
+    mov rbx, rax
 
 loop3:
-    mov eax, edi
-    xor edx, edx
-    div ebx
+    mov rax, rdi
+    xor rdx, rdx
+    div rbx
     add al, '0'
     mov byte [input], al
 
@@ -147,17 +164,17 @@ loop3:
     pop rdx
     pop rax
 
-    mov edi, edx
-    xor edx, edx
-    mov eax, ebx
-    div esi
-    cmp eax, 1
+    mov rdi, rdx
+    xor rdx, rdx
+    mov rax, rbx
+    div rsi
+    cmp rax, 1
     je loop4
-    mov ebx, eax
+    mov rbx, rax
     jmp loop3
 
 loop4:
-    mov edx, edi
+    mov rdx, rdi
     add dl, '0'
     mov byte [input], dl
 
@@ -199,6 +216,48 @@ put_a:
     mov rdi, 1
     mov rsi, sas
     mov rdx, 2
+    syscall
+
+    pop rdi
+    pop rsi
+    pop rdx
+    pop rax
+
+    ret
+
+    ;; ---
+
+put_yes:
+    push rax
+    push rdx
+    push rsi
+    push rdi
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, YES
+    mov rdx, 4
+    syscall
+
+    pop rdi
+    pop rsi
+    pop rdx
+    pop rax
+
+    ret
+
+    ;; ---
+
+put_no:
+    push rax
+    push rdx
+    push rsi
+    push rdi
+
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, NO
+    mov rdx, 3
     syscall
 
     pop rdi
